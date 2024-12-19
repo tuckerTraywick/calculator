@@ -11,38 +11,34 @@ class Calculator:
 		self.frame = ttk.Frame(root)
 		self.result = ttk.Label(self.frame, textvariable=self.resultText, font="Menlo 15", justify="right").grid(column=0, row=0, columnspan=5, sticky="e")
 
-		self.buttonLeftParenthesis = ttk.Button(self.frame, text="(", command=lambda: self.appendToResult("(")).grid(column=0, row=1, sticky="nsew")
-		self.buttonRightParenthesis = ttk.Button(self.frame, text=")", command=lambda: self.appendToResult(")")).grid(column=1, row=1, sticky="nsew")
-		self.buttonRightParenthesis = ttk.Button(self.frame, text="%", command=lambda: self.appendToResult("%")).grid(column=2, row=1, sticky="nsew")
+		# Define the button layout.
+		self.buttonNames = [
+			["a", "b", "c", "f", "sto"],
+			["x", "y", "z", "g", "add"],
+			["(", ")", "√", "^", "ac"],
+			["7", "8", "9", "/", "c"],
+			["4", "5", "6", "*", "del"],
+			["1", "2", "3", "-", "ans"],
+			["%", "0", ".", "+", "="],
+		]
+		self.buttonCommands = {
+			"ac": self.clearAll,
+			"c": self.clearResult,
+			"del": self.delete,
+			"ans": self.appendAnswer,
+			"=": self.evaluate,
+		}
+		self.buttons = []
 
-		self.button7 = ttk.Button(self.frame, text="7", command=lambda: self.appendToResult("7")).grid(column=0, row=2, sticky="nsew")
-		self.button8 = ttk.Button(self.frame, text="8", command=lambda: self.appendToResult("8")).grid(column=1, row=2, sticky="nsew")
-		self.button9 = ttk.Button(self.frame, text="9", command=lambda: self.appendToResult("9")).grid(column=2, row=2, sticky="nsew")
-		self.button4 = ttk.Button(self.frame, text="4", command=lambda: self.appendToResult("4")).grid(column=0, row=3, sticky="nsew")
-		self.button5 = ttk.Button(self.frame, text="5", command=lambda: self.appendToResult("5")).grid(column=1, row=3, sticky="nsew")
-		self.button6 = ttk.Button(self.frame, text="6", command=lambda: self.appendToResult("6")).grid(column=2, row=3, sticky="nsew")
-		self.button1 = ttk.Button(self.frame, text="1", command=lambda: self.appendToResult("1")).grid(column=0, row=4, sticky="nsew")
-		self.button2 = ttk.Button(self.frame, text="2", command=lambda: self.appendToResult("2")).grid(column=1, row=4, sticky="nsew")
-		self.button3 = ttk.Button(self.frame, text="3", command=lambda: self.appendToResult("3")).grid(column=2, row=4, sticky="nsew")
-		self.button0 = ttk.Button(self.frame, text="0", command=lambda: self.appendToResult("0")).grid(column=1, row=5, sticky="nsew")
-		self.buttonScientific = ttk.Button(self.frame, text="e", command=lambda: self.appendToResult("e")).grid(column=0, row=5, sticky="nsew")
-		self.buttonDecimal = ttk.Button(self.frame, text=".", command=lambda: self.appendToResult(".")).grid(column=2, row=5, sticky="nsew")
-
-		self.buttonPower = ttk.Button(self.frame, text="^", command=lambda: self.appendToResult("^")).grid(column=3, row=1, sticky="nsew")
-		self.buttonDivide = ttk.Button(self.frame, text="/", command=lambda: self.appendToResult("/")).grid(column=3, row=2, sticky="nsew")
-		self.buttonTimes = ttk.Button(self.frame, text="*", command=lambda: self.appendToResult("*")).grid(column=3, row=3, sticky="nsew")
-		self.buttonMinus = ttk.Button(self.frame, text="-", command=lambda: self.appendToResult("-")).grid(column=3, row=4, sticky="nsew")
-		self.buttonPlus = ttk.Button(self.frame, text="+", command=lambda: self.appendToResult("+")).grid(column=3, row=5, sticky="nsew")
-
-		self.buttonAllClear = ttk.Button(self.frame, text="ac", command=self.clearAll).grid(column=4, row=1, sticky="nsew")
-		self.buttonClear = ttk.Button(self.frame, text="c", command=self.clearResult).grid(column=4, row=2, sticky="nsew")
-		self.buttonDelete = ttk.Button(self.frame, text="del", command=self.delete).grid(column=4, row=3, sticky="nsew")
-		self.buttonAnswer = ttk.Button(self.frame, text="ans", command=self.appendAnswer).grid(column=4, row=4, sticky="nsew")
-		self.buttonEquals = ttk.Button(self.frame, text="=", command=self.evaluate, default="active").grid(column=4, row=5, sticky="nsew")
-
-		for widget in self.frame.winfo_children():
-			widget.grid_configure(padx=2, pady=0)
-
+		# Setup the buttons.
+		for row in range(len(self.buttonNames)):
+			self.buttons.append([])
+			for column, name in enumerate(self.buttonNames[row]):
+				# Nested lambda to capture just the current value of `name`.
+				command = (lambda x: lambda: self.appendToResult(x))(name)
+				self.buttons[row].append(ttk.Button(self.frame, text=name, command=self.buttonCommands.get(name, command)))
+				self.buttons[row][-1].grid(row=row + 1, column=column, padx=2, pady=0, sticky="nsew")
+				
 		self.frame.grid()
 
 	def appendToResult(self, button):
