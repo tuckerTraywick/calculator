@@ -6,7 +6,6 @@ class Calculator:
 		root.title("Calculator")
 
 		self.answer = "0"
-
 		self.resultText = StringVar(value="")
 
 		self.frame = ttk.Frame(root)
@@ -47,7 +46,10 @@ class Calculator:
 		self.frame.grid()
 
 	def appendToResult(self, button):
-		self.resultText.set(self.resultText.get() + button)
+		if self.resultText.get() == "error":
+			self.resultText.set(button)
+		else:
+			self.resultText.set(self.resultText.get() + button)
 
 	def clearAll(self):
 		self.clearResult()
@@ -57,7 +59,9 @@ class Calculator:
 		self.resultText.set("")
 
 	def delete(self):
-		if self.resultText.get():
+		if self.resultText.get() == "error":
+			self.resultText.set("")
+		elif self.resultText.get():
 			self.resultText.set(self.resultText.get()[:-1])
 
 	def appendAnswer(self):
@@ -65,9 +69,14 @@ class Calculator:
 			self.appendToResult(self.answer)
 
 	def evaluate(self):
-		if self.resultText.get():
-			self.answer = str(eval(self.resultText.get()))
-			self.resultText.set(self.answer)
+		if self.resultText.get() == "error":
+			self.resultText.set("")
+		elif self.resultText.get():
+			try:
+				self.answer = str(eval(self.resultText.get()))
+				self.resultText.set(self.answer)
+			except:
+				self.resultText.set("error")
 
 root = Tk()
 calculator = Calculator(root)
