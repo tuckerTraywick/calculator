@@ -21,7 +21,7 @@ class Calculator:
 			["7", "8", "9", "/", "c"],
 			["4", "5", "6", "*", "del"],
 			["1", "2", "3", "-", "ans"],
-			[".", "0", "E", "+", "="],
+			["e", "0", ".", "+", "="],
 		]
 		self.buttonCommands = {
 			"ac": self.clearAll,
@@ -33,7 +33,6 @@ class Calculator:
 		self.substitutions = [
 			("^", "**"),
 			("%", "*0.01"),
-			("E", "*10**"),
 		]
 		self.buttons = []
 
