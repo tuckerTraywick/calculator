@@ -42,7 +42,7 @@ class Calculator:
 		self.buttonEquals = ttk.Button(self.frame, text="=", command=self.evaluate, default="active").grid(column=4, row=5, sticky="nsew")
 
 		for widget in self.frame.winfo_children():
-			widget.grid_configure(padx=2, pady=2)
+			widget.grid_configure(padx=2, pady=0)
 
 		self.frame.grid()
 
