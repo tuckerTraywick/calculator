@@ -1,6 +1,9 @@
-from math import sqrt
+from math import *
 from tkinter import *
 from tkinter import ttk
+
+cbrt = lambda x: x**(1/3)
+log = log10
 
 class Calculator:
 	def __init__(self, root):
@@ -10,7 +13,7 @@ class Calculator:
 		self.answer = "0"
 
 		self.frame = ttk.Frame(root)
-		self.result = ttk.Label(self.frame, textvariable=self.resultText, font="Menlo 15", justify="right").grid(column=0, row=0, columnspan=5, sticky="e")
+		self.result = ttk.Label(self.frame, textvariable=self.resultText, font="Menlo 15", justify="right").grid(column=0, row=0, columnspan=6, sticky="e")
 
 		# Define the button layout.
 		self.buttonNames = [
@@ -18,7 +21,7 @@ class Calculator:
 			["7", "8", "9", "/", "c"],
 			["4", "5", "6", "*", "del"],
 			["1", "2", "3", "-", "ans"],
-			["e", "0", ".", "+", "="],
+			[".", "0", "E", "+", "="],
 		]
 		self.buttonCommands = {
 			"ac": self.clearAll,
@@ -27,6 +30,11 @@ class Calculator:
 			"ans": self.appendAnswer,
 			"=": self.evaluate,
 		}
+		self.substitutions = [
+			("^", "**"),
+			("%", "*0.01"),
+			("E", "*10**"),
+		]
 		self.buttons = []
 
 		# Setup the buttons.
@@ -68,8 +76,12 @@ class Calculator:
 		if self.resultText.get() == "error":
 			self.resultText.set("")
 		elif self.resultText.get():
+			text = self.resultText.get()
+			for find, replace in self.substitutions:
+				text = text.replace(find, replace)
+
 			try:
-				self.answer = str(eval(self.resultText.get().replace("%", "*0.01")))
+				self.answer = str(eval(text))
 				self.resultText.set(self.answer)
 			except:
 				self.resultText.set("error")
