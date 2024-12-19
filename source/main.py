@@ -1,3 +1,4 @@
+from math import sqrt
 from tkinter import *
 from tkinter import ttk
 
@@ -5,21 +6,19 @@ class Calculator:
 	def __init__(self, root):
 		root.title("Calculator")
 
-		self.answer = "0"
 		self.resultText = StringVar(value="")
+		self.answer = "0"
 
 		self.frame = ttk.Frame(root)
 		self.result = ttk.Label(self.frame, textvariable=self.resultText, font="Menlo 15", justify="right").grid(column=0, row=0, columnspan=5, sticky="e")
 
 		# Define the button layout.
 		self.buttonNames = [
-			["a", "b", "c", "f", "sto"],
-			["x", "y", "z", "g", "add"],
-			["(", ")", "√", "^", "ac"],
+			["(", ")", "%", "^", "ac"],
 			["7", "8", "9", "/", "c"],
 			["4", "5", "6", "*", "del"],
 			["1", "2", "3", "-", "ans"],
-			["%", "0", ".", "+", "="],
+			["e", "0", ".", "+", "="],
 		]
 		self.buttonCommands = {
 			"ac": self.clearAll,
@@ -38,7 +37,8 @@ class Calculator:
 				command = (lambda x: lambda: self.appendToResult(x))(name)
 				self.buttons[row].append(ttk.Button(self.frame, text=name, command=self.buttonCommands.get(name, command)))
 				self.buttons[row][-1].grid(row=row + 1, column=column, padx=2, pady=0, sticky="nsew")
-				
+		self.buttons[-1][-1]["default"] = "active"
+
 		self.frame.grid()
 
 	def appendToResult(self, button):
@@ -69,7 +69,7 @@ class Calculator:
 			self.resultText.set("")
 		elif self.resultText.get():
 			try:
-				self.answer = str(eval(self.resultText.get()))
+				self.answer = str(eval(self.resultText.get().replace("%", "*0.01")))
 				self.resultText.set(self.answer)
 			except:
 				self.resultText.set("error")
